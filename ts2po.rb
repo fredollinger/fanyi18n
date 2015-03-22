@@ -1,20 +1,20 @@
 #! /usr/bin/env ruby
 
 require "rexml/document"
+require_relative "lib/poentries"
 
 if "" == ARGV[0] then 
     puts "USAGE!!"
     exit
 end
 
-def getNameFromElement(element) 
-    element.elements.each("name"){ |element| 
-        return element.text
-    }
-end
+pos = POEntries.new
 
 file = File.new(ARGV[0])
 doc = REXML::Document.new file
-contexts=doc.root.each_element() { |element| 
-    name=getNameFromElement(element)
-}
+pos.parse(doc)
+
+#puts pos[0].name
+#pos.each(){ |element| 
+#    puts element.name
+#}
