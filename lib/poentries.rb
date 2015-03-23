@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
+#
 # POEntry - a class to encapsulate a single line of text to be translated in 
 # a po file.
+#
+# Copyright 2015 Frederick Ollinger <follinge@gmail.com>
+#
+
 class POEntry
-attr_accessor :name, :source
+attr_accessor :name, :source, :extracomment
 end
 
 # POEntries - an enumerable of POEntries
@@ -18,14 +24,23 @@ end
 
 def getElements(context)
     name=context.name=getFieldFromElement("name", context).text
-    #context.elements.each("message"){ |element| 
+    count=1
     sources=context.elements.each("message"){ |message|
             poe = POEntry.new
-            source=message.name=getFieldFromElement("source", message).text
-            poe.name=name
-            poe.source=source
-            puts "#{name} : [#{source}]"
+            poe.name=name+"#"+count.to_s
+            poe.source=getFieldFromElement("source", message).text
+            extracomment=getFieldFromElement("extracomment", message)
+
+            if  REXML::Element ==  extracomment.class
+	       poe.extracomment=extracomment.text
+               #puts "[#{extracomment}]"
+            else
+               #puts "[#{extracomment.class}]"
+	       poe.extracomment=""
+	    end
+
             self << poe
+	    count = count + 1
     }
 end
 
