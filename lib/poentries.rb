@@ -8,6 +8,11 @@
 
 class POEntry
 attr_accessor :name, :source, :extracomment
+
+def to_s()
+    puts "name: [#{name}] source: [#{source}] extracomment: [#{extracomment}]"
+end
+
 end
 
 # POEntries - an enumerable of POEntries
@@ -33,9 +38,7 @@ def getElements(context)
 
             if  REXML::Element ==  extracomment.class
 	       poe.extracomment=extracomment.text
-               #puts "[#{extracomment}]"
             else
-               #puts "[#{extracomment.class}]"
 	       poe.extracomment=""
 	    end
 
@@ -47,6 +50,13 @@ end
 def parse(doc)
     contexts=doc.root.each_element() { |element| 
         getElements(element)
+    }
+end
+
+def to_s()
+    self.each(){ |element| 
+        puts element.to_s
+	puts
     }
 end
 

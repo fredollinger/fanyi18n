@@ -9,7 +9,19 @@
 #
 
 require "rexml/document"
-require_relative "lib/poentries"
+require "./lib/poentries"
+
+def ts2po(pos)
+    pos.each(){ |element| 
+        if not element.extracomment.empty? then
+            puts "# #{element.extracomment}"
+        end
+        puts "#: #{element.name}"
+        puts 'msgid "' + element.source + '"'
+        puts 'msgstr ""'
+        puts
+    }
+end
 
 if "" == ARGV[0] then 
     puts "USAGE!!"
@@ -22,13 +34,5 @@ file = File.new(ARGV[0])
 doc = REXML::Document.new file
 pos.parse(doc)
 
-#puts pos[0].source
-pos.each(){ |element| 
-    if not element.extracomment.empty? then
-        puts "# #{element.extracomment}"
-    end
-    puts "#: #{element.name}"
-    puts 'msgid "' + element.source + '"'
-    puts 'msgstr ""'
-    puts
-}
+# ts2po(pos)
+puts pos.to_s
