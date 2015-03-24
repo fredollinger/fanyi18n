@@ -10,22 +10,9 @@
 
 require "rexml/document"
 if  File.exist?('./lib/poentries.rb') then
-    puts "loading local lib"
     require "./lib/poentries"
 else
    require 'poentries'
-end
-
-def ts2po(pos)
-    pos.each(){ |element| 
-        if not element.extracomment.empty? then
-            puts "# #{element.extracomment}"
-        end
-        puts "#: #{element.name}"
-        puts 'msgid "' + element.source + '"'
-        puts 'msgstr ""'
-        puts
-    }
 end
 
 unless ARGV[0] then 
@@ -46,5 +33,8 @@ file = File.new(ARGV[0])
 doc = REXML::Document.new file
 pos.parse(doc)
 
-# ts2po(pos)
-# puts pos.to_s
+pos.ts2po()
+#puts pos.to_s
+
+#a = pos.find("Save changes?")
+#puts a.length

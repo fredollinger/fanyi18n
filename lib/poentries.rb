@@ -7,13 +7,28 @@
 #
 
 class POEntry
-attr_accessor :name, :source, :extracomment
+attr_accessor :name, :source, :extracomment, :msgctxt 
+
+def cond_p(label, acc)
+    if not acc.empty? then
+        print "#{label}: [#{acc}] "
+    end
+end
 
 def to_s()
-    puts "name: [#{name}] source: [#{source}] extracomment: [#{extracomment}]"
+    cond_p("name", name)
+    cond_p("source", source)
+    cond_p("extracomment", extracomment)
+    cond_p("msgctxt", msgctxt)
+    puts
+    #puts "name: [#{name}] source: [#{source}] extracomment: [#{extracomment}]"
 end
 
+def ==(name)
+    return self.name == element.name
 end
+
+end # class POEntry
 
 # POEntries - an enumerable of POEntries
 class POEntries < Array
@@ -42,10 +57,21 @@ def getElements(context)
 	       poe.extracomment=""
 	    end
 
+
             self << poe
 	    count = count + 1
-    }
-end
+    } # END sources=context.elements.each("message")
+
+    self.each(){ |element| 
+            matches=find(element.source)
+	    if (matches.length > 1) then
+                element.msgctxt = element.name
+            else
+                element.msgctxt = ""
+ 	    end
+     }
+
+end # getElements()
 
 def parse(doc)
     contexts=doc.root.each_element() { |element| 
@@ -60,4 +86,36 @@ def to_s()
     }
 end
 
+# find() find an element based on a piece of text
+# which matches the source
+def find(source)
+    a = []
+    self.each(){ |element| 
+        if element.source == source then
+	    #puts "MATCH: [#{element.source}]"
+	    a << element
+        end
+    }
+    return a
 end
+
+def ts2po()
+    self.each(){ |element| 
+        # FRED TODO: NEED TO PUT pound in front of line breaks!!
+        if not element.extracomment.empty? then
+            puts "# #{element.extracomment}"
+        end
+
+        puts "#: #{element.name}"
+
+        if not element.msgctxt.empty? then
+            puts 'msgctxt "' + element.msgctxt + '"'
+        end
+
+        puts 'msgid "' + element.source + '"'
+        puts 'msgstr ""'
+        puts
+    }
+end
+
+end # class POEntries < Array
