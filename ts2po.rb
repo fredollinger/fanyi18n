@@ -9,7 +9,12 @@
 #
 
 require "rexml/document"
-require "./lib/poentries"
+if  File.exist?('./lib/poentries.rb') then
+    puts "loading local lib"
+    require "./lib/poentries"
+else
+   require 'poentries'
+end
 
 def ts2po(pos)
     pos.each(){ |element| 
@@ -23,8 +28,15 @@ def ts2po(pos)
     }
 end
 
-if "" == ARGV[0] then 
-    puts "USAGE!!"
+unless ARGV[0] then 
+    puts "usage: "
+    puts
+    puts "ts2po.rb translation-file.ts"
+    puts 
+    puts "Usually one gets the translation-file.ts by running lupdate on a directory."
+    puts "See Qt tranlation documentation for details."
+    puts 
+    puts "http://doc.qt.io/qt-4.8/internationalization.html"
     exit
 end
 
@@ -35,4 +47,4 @@ doc = REXML::Document.new file
 pos.parse(doc)
 
 # ts2po(pos)
-puts pos.to_s
+# puts pos.to_s
