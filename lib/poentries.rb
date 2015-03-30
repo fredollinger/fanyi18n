@@ -103,7 +103,9 @@ def ts2po()
     self.each(){ |element| 
         # FRED TODO: NEED TO PUT pound in front of line breaks!!
         if not element.extracomment.empty? then
-            puts "# #{element.extracomment}"
+	    ec = element.extracomment
+	    ec.gsub! "\n", "\n# "
+            puts "# #{ec}"
         end
 
         puts "#: #{element.name}"
